@@ -12,16 +12,19 @@ module.exports.slogic = async (req, res, next) => {
         const { name, email, username, password } = req.body;
         const newUser = new User({ name, email, username });
         const registeredUser = await User.register(newUser, password);
+
+        // Automatically log in after signup
         req.login(registeredUser, (err) => {
             if (err) {
                 req.flash("error", "Problem logging in!");
-                return res.redirect("/listings");
+                return res.redirect("/");
             }
             req.flash("success", "Welcome to LodgeLink!");
-            res.redirect("/listings");
+            res.redirect("/");
         });
     } catch (err) {
-        req.flash("error", "Username already exists!");
+        console.error(err);
+        req.flash("error", "Username or email already exists!");
         res.redirect("/signup");
     }
 };
@@ -33,34 +36,37 @@ module.exports.login = (req, res) => {
 
 // Login logic
 module.exports.llogic = (req, res) => {
-    if (res.locals.redirectUrl) {
-        return res.redirect(res.locals.redirectUrl);
-    }
-    res.redirect("/listings");
+    const redirectUrl = res.locals.redirectUrl || "/";
+    delete req.session.redirectUrl; // Clear redirect session
+    req.flash("success", "Welcome back!");
+    res.redirect(redirectUrl);
 };
 
 // Logout logic
 module.exports.logout = (req, res) => {
     req.logout((err) => {
         if (err) {
-            req.flash("error", "Logout Failed, try again!");
-            return res.redirect("/listings");
+            req.flash("error", "Logout failed, try again!");
+            return res.redirect("/");
         }
-        req.flash("success", "You are Logged Out!");
-        res.redirect("/listings");
+        req.flash("success", "You are logged out!");
+        res.redirect("/");
     });
 };
 
-// View user profile
+// View own profile
 module.exports.viewProfile = async (req, res, next) => {
     try {
         const { username } = req.params;
         const user = await User.findOne({ username });
         if (!user) {
             req.flash("error", "User not found");
-            return res.redirect("/listings");
+            return res.redirect("/");
         }
+
+        // Find listings owned by this user
         const listings = await Listing.find({ owner: user._id });
+
         res.render("user/profile", { user, listings });
     } catch (err) {
         next(err);
@@ -69,45 +75,58 @@ module.exports.viewProfile = async (req, res, next) => {
 
 // Render upload profile picture form
 module.exports.renderUploadForm = (req, res) => {
-    res.render("user/upload");
+    res.render("user/upload", { username: req.params.username });
 };
 
 // Handle profile picture upload
 module.exports.upload = async (req, res, next) => {
-    const { username } = req.params;
-    const url = req.file.path;
-    const filename = req.file.filename;
+    try {
+        const { username } = req.params;
 
-    // Find the user by username
-    const user = await User.findOne({ username });
+        if (!req.file) {
+            req.flash("error", "No file uploaded!");
+            return res.redirect(`/${username}/pfp`);
+        }
 
-    // Check if the user exists
-    if (!user) {
-        req.flash("error", "User not found");
-        return res.redirect("/listings");
+        const url = req.file.path;
+        const filename = req.file.filename;
+
+        const user = await User.findOne({ username });
+        if (!user) {
+            req.flash("error", "User not found");
+            return res.redirect("/");
+        }
+
+        user.profile = { url, filename };
+        await user.save();
+
+        req.flash("success", "Profile picture updated!");
+        res.redirect(`/${username}`);
+    } catch (err) {
+        console.error("Error uploading profile picture:", err);
+        req.flash("error", "Something went wrong while uploading your image.");
+        res.redirect(`/${req.params.username}/pfp`);
     }
-
-    // Set the user's image properties
-    user.profile = { url, filename };
-    await user.save();
-
-    // Redirect to the user's profile
-    res.redirect(`/${username}`);
 };
 
-// User info
+// User info page (public view)
 module.exports.info = async (req, res, next) => {
     try {
         const { username } = req.params;
         const user = await User.findOne({ username });
         if (!user) {
             req.flash("error", "User not found");
-            return res.redirect("/listings");
+            return res.redirect("/");
         }
+
         const listings = await Listing.find({ owner: user._id }).populate("owner");
-        if (user===req.user) {
-            res.render("user/profile",{listings,user});
+
+        // If viewing own profile, render profile page
+        if (req.user && user._id.equals(req.user._id)) {
+            return res.render("user/profile", { user, listings });
         }
+
+        // Public info view
         res.render("user/info", { user, listings });
     } catch (err) {
         next(err);

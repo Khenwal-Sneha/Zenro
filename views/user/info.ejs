@@ -10,8 +10,9 @@
                 <div class="profile-info">
                     <h3><%= currentUser.name %></h3>
                     <p><big>@<%= currentUser.username %></big></p>
-                    <form action="/<%= currentUser.username %>/pfp" method="get">
-                        <button class="btn form-btn">Upload Your Pic</button>
+                    <form action="/<%= currentUser.username %>/pfp" method="POST" enctype="multipart/form-data">
+                        <input type="file" name="img" accept="image/*" required>
+                        <button class="btn form-btn mt-2">Upload Your Pic</button>
                     </form>
                 </div>
             </div>

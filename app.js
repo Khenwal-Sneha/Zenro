@@ -1,6 +1,7 @@
 // REQUIRING EXPRESS
 const express = require("express");
 const app = express();
+
 // REQUIRING THINGS
   if (process.env.NODE_ENV!="production") {
      require("dotenv").config();
@@ -9,28 +10,36 @@ const app = express();
 const ExpressError = require("./utils/ExpressError");
 const asyncWrap = require("./utils/asyncWrap");
 const handleCastError = require("./MongooseErr/CastError");
+
 // REQUIRING MODELS
 const User = require("./models/user");
+
 // REQUIRING MIDDLEWARES
 const cors = require("cors");
 const methodOverride = require("method-override");
 const path = require("path");
 const ejsmate = require("ejs-mate");
+
 // REQUIRING EXPRESS SESSION
 const session = require("express-session");
 const MongoStore = require('connect-mongo');
+
 // REQUIRING PASSPORT AND LOCAL STRATEGY
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+
 // REQUIRING CONNECT-FLASH
 const flash = require("connect-flash");
+
 //REQUIRING MULTER
 const multer=require("multer");
 const upload = multer({ dest: 'uploads/' });
+
 // REQUIRING THE ROUTES
 const listingsroute = require("./routes/listing");
 const reviewsroute = require("./routes/review");
 const usersroute = require("./routes/user");
+
 // Middlewares
 // REQUIRING AND USING CORS
 app.use(cors());
@@ -61,6 +70,7 @@ main()
     .catch((err) => {
         console.error("Error connecting to the database:", err);
     });
+
 
 // USING EXPRESS SESSION
    //mongo session
@@ -103,10 +113,13 @@ app.use((req, res, next) => {
 // USING THE ROUTES
 // FOR LISTINGS
 app.use('/', listingsroute);
-// FOR REVIEWS
-app.use('/listings/:id/reviews', reviewsroute);
+
 // FOR USERS
 app.use('/', usersroute);
+
+// FOR REVIEWS
+app.use('/listings/:id/reviews', reviewsroute);
+
 // ROUTE FOR CHECKING USERNAME EXISTENCE
 app.get('/api/check-username', async (req, res) => {
     // USERNAME TO BE CHECKED IN DB
@@ -120,6 +133,7 @@ app.get('/api/check-username', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 // ROUTE FOR CHECKING EMAIL EXISTENCE
 app.get('/api/check-email', asyncWrap(async (req, res, next) => {
     // EMAIL TO BE CHECKED IN DB
@@ -135,10 +149,6 @@ app.get('/api/check-email', asyncWrap(async (req, res, next) => {
 }));
 
 // ERROR HANDLING MIDDLEWARES
-app.all('/', (req, res, next) => {
-    next(new ExpressError(404, "Page not Found!"));
-});
-
 app.all('*', (req, res, next) => {
     next(new ExpressError(404, "Page not Found!"));
 });

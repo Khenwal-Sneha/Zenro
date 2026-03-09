@@ -4,10 +4,15 @@ const reviewSchema = mongoose.Schema({
     rating:{
         type:Number,
         min:1,
-        max:5
+        max:5,
+        required:true
     },
     comment:{
         type:String
+    },
+    listing:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Listing"
     },
     owner:{
         type:mongoose.Schema.Types.ObjectId,

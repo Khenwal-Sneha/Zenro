@@ -1,49 +1,69 @@
 const Review = require("../models/review");
-const Listing = require("../models/listing"); // Corrected model import
+const Listing = require("../models/listing");
 
-// add route
+// Add a new review
 module.exports.add = async (req, res, next) => {
-    const { id } = req.params;
+    const { id } = req.params; // listing ID
     try {
-        let listing = await Listing.findById(id);
+        const listing = await Listing.findById(id);
         if (!listing) {
             req.flash("error", "Listing not found!");
-            return res.redirect(`/listings/${id}`);
+            return res.redirect("/"); // Redirect to homepage if listing not found
         }
 
         const { rating, comment } = req.body;
-        let r = new Review({ rating: rating, comment: comment, listing: id, owner: req.user._id });
-        await r.save();
-        listing.reviews.unshift(r);
+
+        // Create review
+        const review = new Review({
+            rating: Number(rating), // Ensure rating is a number
+            comment,
+            listing: listing._id,
+            owner: req.user._id
+        });
+
+        await review.save();
+
+        // Add review to the listing
+        listing.reviews.unshift(review._id);
         await listing.save();
-        req.flash("success", "New Review Created!");
+
+        req.flash("success", "Review added successfully!");
         res.redirect(`/listings/${id}`);
     } catch (err) {
-        console.error("Error in add route:", err);
-        req.flash("error", "Error adding review. Please try again later.");
+        console.error("Error adding review:", err);
+        req.flash("error", "Could not add review. Please try again.");
         res.redirect(`/listings/${id}`);
     }
 };
 
-// delete route
+// Delete a review
 module.exports.delete = async (req, res, next) => {
-    const { id, id2 } = req.params;
+    const { id, id2 } = req.params; // id = listing ID, id2 = review ID
     try {
-        const review = await Review.findByIdAndDelete(id2);
+        const review = await Review.findById(id2);
+
         if (!review) {
             req.flash("error", "Review not found!");
             return res.redirect(`/listings/${id}`);
         }
 
-        if (req.user && req.user._id.equals(review.owner._id)) {
-            await Listing.findByIdAndUpdate(id, { $pull: { reviews: id2 } });
-            req.flash("success", "Your Review was deleted!");
-        } else {
-            req.flash("error", "You don't have access to delete this review!");
+        // Only owner of the review can delete
+        if (!req.user._id.equals(review.owner)) {
+            req.flash("error", "You don't have permission to delete this review!");
+            return res.redirect(`/listings/${id}`);
         }
+
+        // Delete review
+        await Review.findByIdAndDelete(id2);
+
+        // Remove review reference from listing
+        await Listing.findByIdAndUpdate(id, { $pull: { reviews: id2 } });
+
+        req.flash("success", "Review deleted successfully!");
+        res.redirect(`/listings/${id}`);
     } catch (err) {
-        console.error("Error in delete route:", err);
-        req.flash("error", "Error deleting review. Please try again later.");
+        console.error("Error deleting review:", err);
+        req.flash("error", "Could not delete review. Please try again.");
+        res.redirect(`/listings/${id}`);
     }
-    res.redirect(`/listings/${id}`);
 };

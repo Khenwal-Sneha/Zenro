@@ -82,7 +82,7 @@ module.exports.update = async (req, res, next) => {
       const listing = await Listing.findById(id);
       if (!listing) {
         req.flash('error', 'Listing not found!');
-        return res.redirect('/listings');
+        return res.redirect('/');
       }
     
       // Check if the current user is the owner of the listing
@@ -119,7 +119,7 @@ module.exports.delete=async (req,res,next)=>{
     if(dltlisting && req.user._id.equals(dltlisting.owner)){
         await Listing.findByIdAndDelete(id);
         req.flash("success","Your Listing was deleted!");
-        res.redirect("/listings");
+        res.redirect("/");
     }else{
         req.flash("error","You cannot delete this listing!");
         res.redirect(`/listings/${id}`);

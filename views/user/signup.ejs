@@ -1,59 +1,66 @@
 <%- layout("/layouts/boilerplate.ejs") %>
 <link rel="stylesheet" href="/css/signup.css">
+
 <body>
-    <form action="/signup" method="post" class="needs-validation signup-form" novalidate>
-        <h3>Signup for LodgeLink!</h3>
-        <!-- FULLNAME  -->
-        <div class="mb-3">
-              <label for="name" class="form-label">Enter your Fullname:</label>
-              <input type="text" class="form-control" required name="name" id="name">
-              <div class="name-err error no-display">
-                <i class="fa-solid fa-circle-exclamation"></i> Name cannot be empty!
-            </div>
-        </div>
-        <!-- EMAIL  -->
-        <div class="mb-3">
-            <label for="email" class="form-label">Enter your Email:</label>
-            <input type="text" class="form-control" required name="email" id="email" required>
-            <div class="email-err1 error no-display">
-                <i class="fa-solid fa-circle-exclamation"></i> Enter valid Email!
-            </div>
-            <div class="email-err2 error no-display">
-                <i class="fa-solid fa-circle-exclamation"></i> User with this email already exists!
-            </div>
-        </div>
-        <!-- USERNAME  -->
-        <div class="mb-3">
-            <label for="username" class="form-label">Enter your Username:</label>
-            <input type="text" class="form-control" required name="username" id="username">
-            <div class="username-err1 error no-display">
-                <i class="fa-solid fa-circle-exclamation"></i> Username cannot be empty!
-            </div>
-            <div class="username-err2 error no-display">
-                <i class="fa-solid fa-circle-exclamation"></i> This username already exists!
-            </div>
-        </div>
-        <!-- PASSWORD  -->
-        <div class="mb-3">
-            <label for="password" class="form-label">Enter your Password:</label>
-            <input type="text" class="form-control" required name="password" id="password">
-            <div>(Password must contain atleast 6 characters,with atleast one uppercase,one lowercase and a special character!)</div>
-            <div class="pass-err error no-display">
-                <i class="fa-solid fa-circle-exclamation"></i> Enter valid password!
-            </div>
-        </div>
-        <!-- REPASSWORD  -->
-        <div class="mb-3">
-            <label for="repass" class="form-label">Confirm your Password:</label>
-            <input type="text" class="form-control" required name="repass" id="repass">
-            <div class="repass-err error no-display">
-                <i class="fa-solid fa-circle-exclamation"></i> Password doesnot match!
-            </div>
-        </div>
-        <button class="btn btn-primary form-btn">Signup</button>
-        <form action="/login" method="get" style="margin-left: 10px;">
-            <button class="btn btn-primary form-btn">Login</button>
-        </form>
-    </form>
-    <script src="/js/signup.js"></script>
+<form action="/signup" method="post" class="needs-validation signup-form" novalidate>
+
+<h3>Signup for LodgeLink!</h3>
+
+<div class="mb-3">
+<label for="name" class="form-label">Enter your Fullname:</label>
+<input type="text" class="form-control" required name="name" id="name">
+<div class="name-err error no-display">
+<i class="fa-solid fa-circle-exclamation"></i> Name cannot be empty!
+</div>
+</div>
+
+<div class="mb-3">
+<label for="email" class="form-label">Enter your Email:</label>
+<input type="text" class="form-control" name="email" id="email" required>
+<div class="email-err1 error no-display">
+<i class="fa-solid fa-circle-exclamation"></i> Enter valid Email!
+</div>
+<div class="email-err2 error no-display">
+<i class="fa-solid fa-circle-exclamation"></i> User with this email already exists!
+</div>
+</div>
+
+<div class="mb-3">
+<label for="username" class="form-label">Enter your Username:</label>
+<input type="text" class="form-control" required name="username" id="username">
+<div class="username-err1 error no-display">
+<i class="fa-solid fa-circle-exclamation"></i> Username cannot be empty!
+</div>
+<div class="username-err2 error no-display">
+<i class="fa-solid fa-circle-exclamation"></i> This username already exists!
+</div>
+</div>
+
+<div class="mb-3">
+<label for="password" class="form-label">Enter your Password:</label>
+<input type="text" class="form-control" required name="password" id="password">
+<div>(Password must contain atleast 6 characters,with atleast one uppercase,one lowercase and a special character!)</div>
+<div class="pass-err error no-display">
+<i class="fa-solid fa-circle-exclamation"></i> Enter valid password!
+</div>
+</div>
+
+<div class="mb-3">
+<label for="repass" class="form-label">Confirm your Password:</label>
+<input type="text" class="form-control" required name="repass" id="repass">
+<div class="repass-err error no-display">
+<i class="fa-solid fa-circle-exclamation"></i> Password doesnot match!
+</div>
+</div>
+
+<button class="btn btn-primary form-btn">Signup</button>
+
+<button type="button" onclick="window.location='/login'" 
+class="btn btn-primary form-btn" style="margin-left:10px;">
+Login
+</button>
+
+</form>
+
+<script src="/js/signup.js"></script>
 </body>

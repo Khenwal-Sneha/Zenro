@@ -23,16 +23,25 @@ router.route("/login")
 router.route("/logout")
     .get(isLoggedin, userController.logout); // Handle logout
 
-// User profile route
-router.route("/:username")
-    .get(isLoggedin, asyncWrap(userController.viewProfile)); // Render user profile
-
 // Profile picture upload routes
 router.route("/:username/pfp")
-    .get(isLoggedin, userController.renderUploadForm) // Render upload profile picture form
-    .post(isLoggedin, upload.single('img'), asyncWrap(userController.upload)); // Handle profile picture upload
+    .get(isLoggedin, userController.renderUploadForm)
+    .post(isLoggedin, (req, res, next) => {
+        upload.single('img')(req, res, function(err) {
+            if (err) {
+                console.error("Multer / Cloudinary error:", err);
+                req.flash("error", "Image upload failed! Please try again.");
+                return res.redirect(`/${req.params.username}/pfp`);
+            }
+            next(); // proceed to asyncWrap(userController.upload)
+        });
+    }, asyncWrap(userController.upload)); // ✅ pass function, not string
 
 // User info route
 router.get("/:username/info", asyncWrap(userController.info));
+
+// User profile route
+router.route("/:username")
+    .get(isLoggedin, asyncWrap(userController.viewProfile)); // Render user profile
 
 module.exports = router;
