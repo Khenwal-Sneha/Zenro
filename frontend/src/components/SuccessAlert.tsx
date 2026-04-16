@@ -26,21 +26,30 @@ export default function SuccessAlert({ message }: SuccessAlertProps) {
     <AnimatePresence>
       {visible && (
         <motion.div
-          className="mb-4 flex items-center justify-between px-5 py-3 rounded-2xl 
-          bg-green-500/10 border border-green-500/20 backdrop-blur-xl 
-          shadow-[0_0_25px_rgba(34,197,94,0.15)]"
-          initial={{ opacity: 0, y: -25 }}
+          className="
+            mb-4 flex items-center justify-between
+            px-4 py-3 rounded-xl
+            bg-green-50 border border-green-200
+            text-green-700
+            shadow-sm
+          "
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -25 }}
-          transition={{ duration: 0.3 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.25 }}
         >
-          <h5 className="font-medium text-green-300">
+          <h5 className="text-sm font-medium">
             {message}
           </h5>
 
           <button
             onClick={() => setVisible(false)}
-            className="ml-4 text-green-400 hover:text-green-200 hover:scale-110 transition text-lg"
+            className="
+              ml-4 text-green-600
+              hover:text-green-800
+              transition
+              text-base
+            "
           >
             ✕
           </button>

@@ -75,80 +75,151 @@ export default function SignupPage() {
   return (
     <Layout>
       <motion.div
-        className="flex items-center justify-center min-h-[80vh]"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+  className="flex items-center justify-center min-h-[80vh]"
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+>
+  <div
+    className="
+      w-full max-w-md
+      bg-white border border-gray-200
+      rounded-2xl p-8
+      shadow-sm
+    "
+  >
+
+    {/* Heading */}
+    <h2 className="text-2xl font-semibold text-gray-900 text-center mb-2">
+      Create your Zenro account
+    </h2>
+
+    <p className="text-center text-gray-600 text-sm mb-6">
+      Join to start hosting premium spaces
+    </p>
+
+    {/* API ERROR */}
+    {errors.api && (
+      <div
+        className="
+          mb-4 px-4 py-2 rounded-xl
+          bg-red-50 border border-red-200
+          text-red-700 text-sm text-center
+        "
       >
-        <div className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-[0_0_30px_rgba(99,102,241,0.15)]">
+        {errors.api}
+      </div>
+    )}
 
-          {/* Heading */}
-          <h2 className="text-3xl font-semibold text-center mb-2 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Create your Zenro account
-          </h2>
+    {/* FORM */}
+    <form onSubmit={handleSubmit} className="space-y-5">
 
-          <p className="text-center text-gray-400 text-sm mb-6">
-            Join to start hosting premium spaces
+      {/* Name */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Full Name
+        </label>
+        <input
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          className="
+            w-full mt-2
+            border border-gray-300
+            rounded-xl px-4 py-2.5
+            focus:outline-none
+            focus:ring-2 focus:ring-teal-500
+          "
+        />
+      </div>
+
+      {/* Email */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Email
+        </label>
+        <input
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          className="
+            w-full mt-2
+            border border-gray-300
+            rounded-xl px-4 py-2.5
+            focus:outline-none
+            focus:ring-2 focus:ring-teal-500
+          "
+        />
+        {errors.email && (
+          <p className="text-red-600 text-sm mt-1">
+            {errors.email}
           </p>
+        )}
+      </div>
 
-          {/* API ERROR */}
-          {errors.api && (
-            <div className="mb-4 px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-sm text-center">
-              {errors.api}
-            </div>
-          )}
+      {/* Username */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Username
+        </label>
+        <input
+          name="username"
+          value={formData.username}
+          onChange={handleChange}
+          className="
+            w-full mt-2
+            border border-gray-300
+            rounded-xl px-4 py-2.5
+            focus:outline-none
+            focus:ring-2 focus:ring-teal-500
+          "
+        />
+        {errors.username && (
+          <p className="text-red-600 text-sm mt-1">
+            {errors.username}
+          </p>
+        )}
+      </div>
 
-          {/* FORM */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Password */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Password
+        </label>
+        <input
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          className="
+            w-full mt-2
+            border border-gray-300
+            rounded-xl px-4 py-2.5
+            focus:outline-none
+            focus:ring-2 focus:ring-teal-500
+          "
+        />
+      </div>
 
-            <input
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Full Name"
-              className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+      {/* Button */}
+      <button
+        type="submit"
+        disabled={loading}
+        className="
+          w-full
+          bg-teal-600 hover:bg-teal-700
+          text-white font-medium
+          py-3 rounded-xl
+          shadow-sm hover:shadow-md
+          transition-all duration-200
+          disabled:opacity-50
+        "
+      >
+        {loading ? "Creating account..." : "Create Account"}
+      </button>
 
-            <input
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Email"
-              className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-            {errors.email && (
-              <p className="text-red-400 text-sm">{errors.email}</p>
-            )}
-
-            <input
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              placeholder="Username"
-              className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-            {errors.username && (
-              <p className="text-red-400 text-sm">{errors.username}</p>
-            )}
-
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Password"
-              className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-semibold shadow-lg hover:scale-105 transition disabled:opacity-50"
-            >
-              {loading ? "Creating account..." : "Create Account"}
-            </button>
-          </form>
-        </div>
-      </motion.div>
+    </form>
+  </div>
+</motion.div>
     </Layout>
   );
 }

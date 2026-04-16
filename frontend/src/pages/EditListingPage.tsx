@@ -143,136 +143,196 @@ export default function EditListingPage() {
   return (
     <Layout>
       <motion.div
-        className="max-w-3xl mx-auto bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-[0_0_30px_rgba(99,102,241,0.15)]"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <h2 className="text-3xl font-semibold mb-8 text-center bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-          Refine Your Space on Zenro
-        </h2>
+  className="
+    max-w-3xl mx-auto
+    bg-white border border-gray-200
+    rounded-2xl p-8
+    shadow-sm
+  "
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+>
+  <h2 className="text-2xl font-semibold text-gray-900 text-center mb-8">
+    Refine Your Space on Zenro
+  </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+  <form onSubmit={handleSubmit} className="space-y-6">
 
-          {/* Title */}
-          <div>
-            <label className="font-medium text-gray-300">
-              Title<span className="text-red-400">*</span>
-            </label>
-            <input
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              className="w-full mt-2 p-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-            {errors.title && (
-              <p className="text-red-400 text-sm mt-1">
-                Please give your listing a title!
-              </p>
-            )}
-          </div>
+    {/* Title */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700">
+        Title<span className="text-red-500">*</span>
+      </label>
+      <input
+        name="title"
+        value={formData.title}
+        onChange={handleChange}
+        className="
+          w-full mt-2
+          border border-gray-300
+          rounded-xl px-4 py-2.5
+          focus:outline-none
+          focus:ring-2 focus:ring-teal-500
+          focus:border-transparent
+        "
+      />
+      {errors.title && (
+        <p className="text-red-500 text-sm mt-1">
+          Please give your listing a title!
+        </p>
+      )}
+    </div>
 
-          {/* Description */}
-          <div>
-            <label className="font-medium text-gray-300">Description</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="w-full mt-2 p-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
+    {/* Description */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700">
+        Description
+      </label>
+      <textarea
+        name="description"
+        value={formData.description}
+        onChange={handleChange}
+        className="
+          w-full mt-2
+          border border-gray-300
+          rounded-xl px-4 py-2.5
+          focus:outline-none
+          focus:ring-2 focus:ring-teal-500
+          focus:border-transparent
+        "
+      />
+    </div>
 
-          {/* Images */}
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <label className="font-medium text-gray-300">
-                Current Image
-              </label>
-              <img
-                src={editlist?.image?.url || ""}
-                className="mt-3 rounded-xl h-40 w-full object-cover border border-white/10 shadow-md"
-              />
-            </div>
+    {/* Images */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Current Image
+        </label>
+        <img
+          src={editlist?.image?.url || ""}
+          className="
+            mt-3 rounded-xl h-40 w-full object-cover
+            border border-gray-200 shadow-sm
+          "
+        />
+      </div>
 
-            <div>
-              <label className="font-medium text-gray-300">
-                Upload New Image
-              </label>
-              <input
-                type="file"
-                name="img"
-                onChange={handleFileChange}
-                className="mt-3 text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-500 file:text-white hover:file:bg-indigo-600 transition"
-              />
-            </div>
-          </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Upload New Image
+        </label>
+        <input
+          type="file"
+          name="img"
+          onChange={handleFileChange}
+          className="
+            mt-3 text-sm text-gray-600
+            file:mr-4 file:px-4 file:py-2
+            file:rounded-xl file:border-0
+            file:bg-teal-600 file:text-white
+            hover:file:bg-teal-700
+            transition
+          "
+        />
+      </div>
+    </div>
 
-          {/* Price + Country */}
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <label className="font-medium text-gray-300">
-                Price<span className="text-red-400">*</span>
-              </label>
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                className="w-full mt-2 p-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-              {errors.price && (
-                <p className="text-red-400 text-sm mt-1">
-                  Please enter valid Price!
-                </p>
-              )}
-            </div>
+    {/* Price + Country */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Price<span className="text-red-500">*</span>
+        </label>
+        <input
+          type="number"
+          name="price"
+          value={formData.price}
+          onChange={handleChange}
+          className="
+            w-full mt-2
+            border border-gray-300
+            rounded-xl px-4 py-2.5
+            focus:outline-none
+            focus:ring-2 focus:ring-teal-500
+            focus:border-transparent
+          "
+        />
+        {errors.price && (
+          <p className="text-red-500 text-sm mt-1">
+            Please enter valid Price!
+          </p>
+        )}
+      </div>
 
-            <div>
-              <label className="font-medium text-gray-300">
-                Country<span className="text-red-400">*</span>
-              </label>
-              <input
-                name="country"
-                value={formData.country}
-                onChange={handleChange}
-                className="w-full mt-2 p-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-              {errors.country && (
-                <p className="text-red-400 text-sm mt-1">
-                  Please enter valid Country Name!
-                </p>
-              )}
-            </div>
-          </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Country<span className="text-red-500">*</span>
+        </label>
+        <input
+          name="country"
+          value={formData.country}
+          onChange={handleChange}
+          className="
+            w-full mt-2
+            border border-gray-300
+            rounded-xl px-4 py-2.5
+            focus:outline-none
+            focus:ring-2 focus:ring-teal-500
+            focus:border-transparent
+          "
+        />
+        {errors.country && (
+          <p className="text-red-500 text-sm mt-1">
+            Please enter valid Country Name!
+          </p>
+        )}
+      </div>
+    </div>
 
-          {/* Location */}
-          <div>
-            <label className="font-medium text-gray-300">
-              Location<span className="text-red-400">*</span>
-            </label>
-            <input
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              className="w-full mt-2 p-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-            {errors.location && (
-              <p className="text-red-400 text-sm mt-1">
-                Please enter valid Location!
-              </p>
-            )}
-          </div>
+    {/* Location */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700">
+        Location<span className="text-red-500">*</span>
+      </label>
+      <input
+        name="location"
+        value={formData.location}
+        onChange={handleChange}
+        className="
+          w-full mt-2
+          border border-gray-300
+          rounded-xl px-4 py-2.5
+          focus:outline-none
+          focus:ring-2 focus:ring-teal-500
+          focus:border-transparent
+        "
+      />
+      {errors.location && (
+        <p className="text-red-500 text-sm mt-1">
+          Please enter valid Location!
+        </p>
+      )}
+    </div>
 
-          {/* Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-semibold shadow-lg hover:scale-105 transition"
-          >
-            {loading ? "Updating..." : "Save Changes"}
-          </button>
-        </form>
-      </motion.div>
+    {/* Button */}
+    <button
+      type="submit"
+      disabled={loading}
+      className="
+        w-full
+        bg-teal-600 hover:bg-teal-700
+        text-white font-medium
+        py-3 rounded-xl
+        shadow-sm hover:shadow-md
+        transition-all duration-200
+      "
+    >
+      {loading ? "Updating..." : "Save Changes"}
+    </button>
+
+  </form>
+</motion.div>
     </Layout>
   );
 }

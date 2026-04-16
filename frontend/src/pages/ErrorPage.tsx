@@ -29,32 +29,41 @@ export default function ErrorPage({ err }: Props) {
   return (
     <Layout>
       <motion.div
-        className="flex flex-col items-center justify-center text-center py-24"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4 }}
-      >
-        {/* Icon */}
-        <div className="text-6xl mb-6">🚫</div>
+  className="flex flex-col items-center justify-center text-center py-24 px-4"
+  initial={{ opacity: 0, scale: 0.96 }}
+  animate={{ opacity: 1, scale: 1 }}
+  transition={{ duration: 0.3 }}
+>
 
-        {/* Status */}
-        <h2 className="text-5xl font-bold mb-3 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-          {status}
-        </h2>
+  {/* Icon */}
+  <div className="text-5xl mb-6">🚫</div>
 
-        {/* Message */}
-        <h3 className="text-lg text-gray-400 max-w-md">
-          {message}
-        </h3>
+  {/* Status */}
+  <h2 className="text-4xl font-semibold text-gray-900 mb-2">
+    {status}
+  </h2>
 
-        {/* Button */}
-        <Link
-          to="/"
-          className="mt-8 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-semibold shadow-lg hover:scale-105 transition"
-        >
-          Back to Zenro
-        </Link>
-      </motion.div>
+  {/* Message */}
+  <p className="text-gray-600 max-w-md text-sm">
+    {message}
+  </p>
+
+  {/* Action */}
+  <Link
+    to="/"
+    className="
+      mt-8
+      bg-teal-600 hover:bg-teal-700
+      text-white font-medium
+      px-6 py-3 rounded-xl
+      shadow-sm hover:shadow-md
+      transition-all duration-200
+    "
+  >
+    Back to Zenro
+  </Link>
+
+</motion.div>
     </Layout>
   );
 }

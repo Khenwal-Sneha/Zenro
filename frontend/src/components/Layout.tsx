@@ -28,21 +28,22 @@ export default function Layout({ children }: LayoutProps) {
   }, []);
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-[#0B0F1A] text-white overflow-hidden">
-
-      {/* 🌌 Background Glow Effects */}
-      <div className="absolute top-[-100px] left-[-100px] w-[300px] h-[300px] bg-purple-600/20 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-[-120px] right-[-120px] w-[300px] h-[300px] bg-indigo-600/20 rounded-full blur-3xl"></div>
+    <div className="min-h-screen flex flex-col bg-slate-50 text-gray-900">
 
       {/* Navbar */}
       <Navbar currentUser={currentUser} />
 
       {/* Main Content */}
       <motion.main
-        className="relative flex-grow max-w-6xl mx-auto w-full px-6 py-10"
-        initial={{ opacity: 0, y: 25 }}
+        className="
+          flex-grow
+          max-w-7xl mx-auto w-full
+          px-4 sm:px-6 lg:px-8
+          py-8
+        "
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.3 }}
       >
         {/* Alerts */}
         <div className="space-y-4 mb-6">

@@ -3,9 +3,13 @@ import { motion } from "framer-motion";
 import Layout from "../components/Layout";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import ErrorAlert from "../components/ErrorAlert";
+import SuccessAlert from "../components/SuccessAlert";
 
 export default function CreateListingPage() {
   const navigate = useNavigate();
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const [formData, setFormData] = useState({
     title: "",
@@ -59,56 +63,66 @@ export default function CreateListingPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (!validate()) return;
-  
+
     // ✅ FIX: DO NOT use localStorage
     // just rely on backend session/cookie auth
-  
+
     setLoading(true);
-  
+
     try {
       const data = new FormData();
-  
+
       data.append("title", formData.title);
       data.append("description", formData.description);
       data.append("price", formData.price);
       data.append("country", formData.country);
       data.append("location", formData.location);
-  
+
       if (formData.img) {
         data.append("image", formData.img);
       }
-  
+
       const res = await api.post("/listings", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
         withCredentials: true, // IMPORTANT
       });
-  
-      alert("Listing created successfully!");
+      
       navigate("/");
-  
+      setSuccessMsg("Listing created successfully!");
+
     } catch (err: any) {
       if (err?.response?.status === 401) {
-        alert("Please login to create a listing");
         navigate("/login");
+        setErrorMsg("Please login to create a listing");
       } else {
-        alert(err?.response?.data?.message || "Failed to create listing");
+        setErrorMsg(err?.response?.data?.message || "Failed to create listing");
       }
     } finally {
       setLoading(false);
     }
   };
   return (
+    
     <Layout>
       <motion.div
-        className="max-w-3xl mx-auto bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-[0_0_30px_rgba(99,102,241,0.15)]"
-        initial={{ opacity: 0, y: 30 }}
+        className="
+    max-w-3xl mx-auto
+    bg-white border border-gray-200
+    rounded-2xl p-8
+    shadow-sm
+  "
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-3xl font-semibold mb-8 text-center bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+        <div className="mb-4">
+  <ErrorAlert message={errorMsg} />
+  <SuccessAlert message={successMsg} />
+</div>
+        <h2 className="text-2xl font-semibold text-gray-900 text-center mb-8">
           List Your Space on Zenro
         </h2>
 
@@ -116,17 +130,24 @@ export default function CreateListingPage() {
 
           {/* Title */}
           <div>
-            <label className="font-medium text-gray-300">
-              Title<span className="text-red-400">*</span>
+            <label className="block text-sm font-medium text-gray-700">
+              Title<span className="text-red-500">*</span>
             </label>
             <input
               name="title"
               value={formData.title}
               onChange={handleChange}
-              className="w-full mt-2 p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="
+          w-full mt-2
+          border border-gray-300
+          rounded-xl px-4 py-2.5
+          focus:outline-none
+          focus:ring-2 focus:ring-teal-500
+          focus:border-transparent
+        "
             />
             {errors.title && (
-              <p className="text-red-400 text-sm mt-1">
+              <p className="text-red-500 text-sm mt-1">
                 Please give your listing a title!
               </p>
             )}
@@ -134,65 +155,95 @@ export default function CreateListingPage() {
 
           {/* Description */}
           <div>
-            <label className="font-medium text-gray-300">Description</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Description
+            </label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="w-full mt-2 p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="
+          w-full mt-2
+          border border-gray-300
+          rounded-xl px-4 py-2.5
+          focus:outline-none
+          focus:ring-2 focus:ring-teal-500
+          focus:border-transparent
+        "
             />
           </div>
 
           {/* Image */}
           <div>
-            <label className="font-medium text-gray-300">
-              Upload Image<span className="text-red-400">*</span>
+            <label className="block text-sm font-medium text-gray-700">
+              Upload Image<span className="text-red-500">*</span>
             </label>
             <input
               type="file"
               name="img"
               onChange={handleFileChange}
-              className="mt-2 text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-500 file:text-white hover:file:bg-indigo-600 transition"
+              className="
+          mt-2 text-sm text-gray-600
+          file:mr-4 file:px-4 file:py-2
+          file:rounded-xl file:border-0
+          file:bg-teal-600 file:text-white
+          hover:file:bg-teal-700
+          transition
+        "
             />
             {errors.img && (
-              <p className="text-red-400 text-sm mt-1">
+              <p className="text-red-500 text-sm mt-1">
                 Please upload an image!
               </p>
             )}
           </div>
 
           {/* Price + Country */}
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="font-medium text-gray-300">
-                Price<span className="text-red-400">*</span>
+              <label className="block text-sm font-medium text-gray-700">
+                Price<span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
-                className="w-full mt-2 p-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="
+            w-full mt-2
+            border border-gray-300
+            rounded-xl px-4 py-2.5
+            focus:outline-none
+            focus:ring-2 focus:ring-teal-500
+            focus:border-transparent
+          "
               />
               {errors.price && (
-                <p className="text-red-400 text-sm mt-1">
+                <p className="text-red-500 text-sm mt-1">
                   Enter valid price!
                 </p>
               )}
             </div>
 
             <div>
-              <label className="font-medium text-gray-300">
-                Country<span className="text-red-400">*</span>
+              <label className="block text-sm font-medium text-gray-700">
+                Country<span className="text-red-500">*</span>
               </label>
               <input
                 name="country"
                 value={formData.country}
                 onChange={handleChange}
-                className="w-full mt-2 p-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="
+            w-full mt-2
+            border border-gray-300
+            rounded-xl px-4 py-2.5
+            focus:outline-none
+            focus:ring-2 focus:ring-teal-500
+            focus:border-transparent
+          "
               />
               {errors.country && (
-                <p className="text-red-400 text-sm mt-1">
+                <p className="text-red-500 text-sm mt-1">
                   Enter country!
                 </p>
               )}
@@ -201,17 +252,24 @@ export default function CreateListingPage() {
 
           {/* Location */}
           <div>
-            <label className="font-medium text-gray-300">
-              Location<span className="text-red-400">*</span>
+            <label className="block text-sm font-medium text-gray-700">
+              Location<span className="text-red-500">*</span>
             </label>
             <input
               name="location"
               value={formData.location}
               onChange={handleChange}
-              className="w-full mt-2 p-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="
+          w-full mt-2
+          border border-gray-300
+          rounded-xl px-4 py-2.5
+          focus:outline-none
+          focus:ring-2 focus:ring-teal-500
+          focus:border-transparent
+        "
             />
             {errors.location && (
-              <p className="text-red-400 text-sm mt-1">
+              <p className="text-red-500 text-sm mt-1">
                 Enter location!
               </p>
             )}
@@ -220,10 +278,18 @@ export default function CreateListingPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-semibold shadow-lg hover:scale-105 transition"
+            className="
+        w-full
+        bg-teal-600 hover:bg-teal-700
+        text-white font-medium
+        py-3 rounded-xl
+        shadow-sm hover:shadow-md
+        transition-all duration-200
+      "
           >
             {loading ? "Creating..." : "Publish on Zenro"}
           </button>
+
         </form>
       </motion.div>
     </Layout>

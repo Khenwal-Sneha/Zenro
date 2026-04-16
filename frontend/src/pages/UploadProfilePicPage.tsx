@@ -52,41 +52,41 @@ export default function UploadProfilePicPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <div className="w-full max-w-xl bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-[0_0_30px_rgba(99,102,241,0.15)]">
-
+        <div className="w-full max-w-xl bg-white border border-gray-200 p-8 rounded-2xl shadow-sm">
+  
           {/* Heading */}
-          <h2 className="text-2xl font-semibold text-center text-white">
+          <h2 className="text-2xl font-semibold text-center text-gray-900">
             Upload your Zenro avatar
           </h2>
-
-          <p className="text-center text-gray-400 text-sm mt-2 mb-6">
+  
+          <p className="text-center text-gray-500 text-sm mt-2 mb-6">
             Personalize your profile with a new image
           </p>
-
+  
           {/* FORM */}
           <form onSubmit={handleSubmit} className="space-y-6">
-
-            {/* DROP AREA STYLE INPUT */}
-            <div className="border border-dashed border-white/20 rounded-2xl p-6 text-center bg-white/5 hover:bg-white/10 transition">
+  
+            {/* FILE INPUT AREA */}
+            <div className="border border-dashed border-gray-300 rounded-xl p-6 text-center bg-gray-50 hover:bg-gray-100 transition">
               <input
                 type="file"
                 accept="image/*"
                 onChange={(e) =>
                   e.target.files && setFile(e.target.files[0])
                 }
-                className="w-full text-gray-400 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-500 file:text-white hover:file:bg-indigo-600"
+                className="w-full text-gray-600 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-gray-300 file:bg-white file:text-gray-700 hover:file:bg-gray-100"
               />
-
+  
               <p className="text-xs text-gray-500 mt-3">
                 JPG, PNG or WEBP supported
               </p>
             </div>
-
+  
             {/* BUTTON */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-semibold shadow-lg hover:scale-105 transition disabled:opacity-50"
+              className="w-full py-3 rounded-xl bg-teal-600 text-white font-semibold hover:bg-teal-700 transition disabled:opacity-50"
             >
               {loading ? "Uploading..." : "Update Avatar"}
             </button>
