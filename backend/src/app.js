@@ -2,7 +2,6 @@
 // IMPORTS
 // =====================
 require("dotenv").config();
-console.log("SECRET =", process.env.ATLASDB_URL);
 const express = require("express");
 const app = express();
 
@@ -53,7 +52,7 @@ app.use(express.json());
 const dburl = process.env.ATLASDB_URL;
 
 mongoose.connect(dburl)
-  .then(() => console.log("✅ Mongo Connected"))
+  .then(() => console.log("Mongo Connected"))
   .catch((err) => console.log("❌ DB Error:", err));
   
 app.use(
@@ -151,5 +150,5 @@ app.use((err, req, res, next) => {
 // SERVER
 // =====================
 app.listen(8080, () => {
-  console.log("🚀 Server running on http://localhost:8080");
+  console.log("Server running on http://localhost:8080");
 });

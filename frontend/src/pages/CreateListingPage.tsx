@@ -8,8 +8,10 @@ import SuccessAlert from "../components/SuccessAlert";
 
 export default function CreateListingPage() {
   const navigate = useNavigate();
+
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [preview, setPreview] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -33,18 +35,16 @@ export default function CreateListingPage() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setFormData({
-        ...formData,
-        img: e.target.files[0],
-      });
+      const file = e.target.files[0];
+      setFormData({ ...formData, img: file });
+
+      // 🔥 image preview
+      setPreview(URL.createObjectURL(file));
     }
   };
 
@@ -63,89 +63,75 @@ export default function CreateListingPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!validate()) return;
-
-    // ✅ FIX: DO NOT use localStorage
-    // just rely on backend session/cookie auth
 
     setLoading(true);
 
     try {
       const data = new FormData();
-
-      data.append("title", formData.title);
-      data.append("description", formData.description);
-      data.append("price", formData.price);
-      data.append("country", formData.country);
-      data.append("location", formData.location);
-
-      if (formData.img) {
-        data.append("image", formData.img);
-      }
-
-      const res = await api.post("/listings", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true, // IMPORTANT
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value) data.append(key === "img" ? "image" : key, value as any);
       });
-      
-      navigate("/");
-      setSuccessMsg("Listing created successfully!");
 
+      await api.post("/listings", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+
+      setSuccessMsg("Listing created successfully!");
+      navigate("/");
     } catch (err: any) {
       if (err?.response?.status === 401) {
         navigate("/login");
         setErrorMsg("Please login to create a listing");
       } else {
-        setErrorMsg(err?.response?.data?.message || "Failed to create listing");
+        setErrorMsg(
+          err?.response?.data?.message || "Failed to create listing"
+        );
       }
     } finally {
       setLoading(false);
     }
   };
+
   return (
-    
     <Layout>
       <motion.div
         className="
-    max-w-3xl mx-auto
-    bg-white border border-gray-200
-    rounded-2xl p-8
-    shadow-sm
-  "
-        initial={{ opacity: 0, y: 20 }}
+          max-w-3xl mx-auto
+          bg-white/70 backdrop-blur-lg
+          border border-gray-200
+          rounded-2xl p-6 sm:p-8
+          shadow-sm
+        "
+        initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <div className="mb-4">
-  <ErrorAlert message={errorMsg} />
-  <SuccessAlert message={successMsg} />
-</div>
+        {/* Alerts */}
+        <div className="mb-6 space-y-3">
+          <ErrorAlert message={errorMsg} />
+          <SuccessAlert message={successMsg} />
+        </div>
+
+        {/* Title */}
         <h2 className="text-2xl font-semibold text-gray-900 text-center mb-8">
           List Your Space on Zenro
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
 
-          {/* Title */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Title<span className="text-red-500">*</span>
-            </label>
+          {/* TITLE */}
+          <div className="relative">
             <input
               name="title"
               value={formData.title}
               onChange={handleChange}
-              className="
-          w-full mt-2
-          border border-gray-300
-          rounded-xl px-4 py-2.5
-          focus:outline-none
-          focus:ring-2 focus:ring-teal-500
-          focus:border-transparent
-        "
+              placeholder=" "
+              className="peer w-full border border-gray-300 rounded-xl px-4 pt-5 pb-2 focus:ring-2 focus:ring-teal-500 focus:outline-none"
             />
+            <label className="absolute left-4 top-2 text-xs text-gray-500 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm transition-all">
+              Title *
+            </label>
             {errors.title && (
               <p className="text-red-500 text-sm mt-1">
                 Please give your listing a title!
@@ -153,44 +139,40 @@ export default function CreateListingPage() {
             )}
           </div>
 
-          {/* Description */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Description
-            </label>
+          {/* DESCRIPTION */}
+          <div className="relative">
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="
-          w-full mt-2
-          border border-gray-300
-          rounded-xl px-4 py-2.5
-          focus:outline-none
-          focus:ring-2 focus:ring-teal-500
-          focus:border-transparent
-        "
+              placeholder=" "
+              className="peer w-full border border-gray-300 rounded-xl px-4 pt-5 pb-2 focus:ring-2 focus:ring-teal-500 focus:outline-none"
             />
+            <label className="absolute left-4 top-2 text-xs text-gray-500 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm transition-all">
+              Description
+            </label>
           </div>
 
-          {/* Image */}
+          {/* IMAGE */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Upload Image<span className="text-red-500">*</span>
+            <label className="text-sm font-medium text-gray-700">
+              Upload Image *
             </label>
+
             <input
               type="file"
-              name="img"
               onChange={handleFileChange}
-              className="
-          mt-2 text-sm text-gray-600
-          file:mr-4 file:px-4 file:py-2
-          file:rounded-xl file:border-0
-          file:bg-teal-600 file:text-white
-          hover:file:bg-teal-700
-          transition
-        "
+              className="mt-2 text-sm file:px-4 file:py-2 file:rounded-xl file:bg-teal-600 file:text-white hover:file:bg-teal-700"
             />
+
+            {/* 🔥 PREVIEW */}
+            {preview && (
+              <img
+                src={preview}
+                className="mt-4 rounded-xl w-full h-52 object-cover border"
+              />
+            )}
+
             {errors.img && (
               <p className="text-red-500 text-sm mt-1">
                 Please upload an image!
@@ -198,26 +180,21 @@ export default function CreateListingPage() {
             )}
           </div>
 
-          {/* Price + Country */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Price<span className="text-red-500">*</span>
-              </label>
+          {/* PRICE + COUNTRY */}
+          <div className="grid md:grid-cols-2 gap-6">
+
+            <div className="relative">
               <input
                 type="number"
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
-                className="
-            w-full mt-2
-            border border-gray-300
-            rounded-xl px-4 py-2.5
-            focus:outline-none
-            focus:ring-2 focus:ring-teal-500
-            focus:border-transparent
-          "
+                placeholder=" "
+                className="peer w-full border border-gray-300 rounded-xl px-4 pt-5 pb-2 focus:ring-2 focus:ring-teal-500"
               />
+              <label className="absolute left-4 top-2 text-xs text-gray-500 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm transition-all">
+                Price *
+              </label>
               {errors.price && (
                 <p className="text-red-500 text-sm mt-1">
                   Enter valid price!
@@ -225,23 +202,17 @@ export default function CreateListingPage() {
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Country<span className="text-red-500">*</span>
-              </label>
+            <div className="relative">
               <input
                 name="country"
                 value={formData.country}
                 onChange={handleChange}
-                className="
-            w-full mt-2
-            border border-gray-300
-            rounded-xl px-4 py-2.5
-            focus:outline-none
-            focus:ring-2 focus:ring-teal-500
-            focus:border-transparent
-          "
+                placeholder=" "
+                className="peer w-full border border-gray-300 rounded-xl px-4 pt-5 pb-2 focus:ring-2 focus:ring-teal-500"
               />
+              <label className="absolute left-4 top-2 text-xs text-gray-500 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm transition-all">
+                Country *
+              </label>
               {errors.country && (
                 <p className="text-red-500 text-sm mt-1">
                   Enter country!
@@ -250,24 +221,18 @@ export default function CreateListingPage() {
             </div>
           </div>
 
-          {/* Location */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Location<span className="text-red-500">*</span>
-            </label>
+          {/* LOCATION */}
+          <div className="relative">
             <input
               name="location"
               value={formData.location}
               onChange={handleChange}
-              className="
-          w-full mt-2
-          border border-gray-300
-          rounded-xl px-4 py-2.5
-          focus:outline-none
-          focus:ring-2 focus:ring-teal-500
-          focus:border-transparent
-        "
+              placeholder=" "
+              className="peer w-full border border-gray-300 rounded-xl px-4 pt-5 pb-2 focus:ring-2 focus:ring-teal-500"
             />
+            <label className="absolute left-4 top-2 text-xs text-gray-500 peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm transition-all">
+              Location *
+            </label>
             {errors.location && (
               <p className="text-red-500 text-sm mt-1">
                 Enter location!
@@ -275,17 +240,19 @@ export default function CreateListingPage() {
             )}
           </div>
 
+          {/* SUBMIT */}
           <button
             type="submit"
             disabled={loading}
             className="
-        w-full
-        bg-teal-600 hover:bg-teal-700
-        text-white font-medium
-        py-3 rounded-xl
-        shadow-sm hover:shadow-md
-        transition-all duration-200
-      "
+              w-full
+              bg-gradient-to-r from-teal-600 to-teal-500
+              text-white font-medium
+              py-3 rounded-xl
+              shadow-md hover:shadow-lg
+              hover:scale-[1.02]
+              transition-all duration-200
+            "
           >
             {loading ? "Creating..." : "Publish on Zenro"}
           </button>
